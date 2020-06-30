@@ -26,9 +26,16 @@ module.exports = {
   update: async function (req, res) {
     console.log(req.body)
     const user = await db.User.findById(req.params.id)
-    console.log(user)
     user.leagueUsernames.push(req.body)
-    console.log(user)
+    user.save()
+      .then(data => res.json(data))
+      .catch(err => console.log(err));
+  },
+  updateChampions: async function (req, res) {
+    const user = await db.User.findById(req.params.id)
+    const summoner = user.leagueUsernames.id(req.body.summoner)
+    summoner.championPlayed.push(req.body.championPlayed)
+    console.log(summoner)
     user.save()
       .then(data => res.json(data))
       .catch(err => console.log(err));

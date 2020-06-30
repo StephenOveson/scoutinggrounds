@@ -21,6 +21,7 @@ type rank = {
 }
 
 type leagueUsername = {
+    _id: string;
     username: string;
     rank: rank;
     championPlayed: championPlayed[]

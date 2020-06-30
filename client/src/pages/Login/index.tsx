@@ -11,12 +11,11 @@ export const Login = () => {
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState('');
 
-    const loginUser = () => {
+    const loginUser = () => 
         userService.login({username, password}).then(({data}) => {
             setUser(new User(data))
             setRedirect('/dashboard')
         })
-    }
 
     return redirect ? <Redirect to={redirect} /> :
     (

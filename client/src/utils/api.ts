@@ -11,7 +11,7 @@ export const userService = {
     login: (obj: signup) => axios.post('api/users/login', obj),
     signup: (obj: signup) => axios.post('api/users/', obj),
     addLeagueAccount: (id: string, leagueUsernames: { username: string, championPlayed: championPlayed[] }) => axios.put('api/users/' + id, leagueUsernames),
-    addChampionPlayed: (id: string, championPlayed: championPlayed) => axios.put('api/users/' + id, championPlayed)
+    addChampionPlayed: (userId: string, summoner:string, championPlayed: championPlayed) => axios.put('api/users/champion/' + userId, {summoner, championPlayed})
 }
 
 export const leagueApi = {

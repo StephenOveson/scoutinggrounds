@@ -15,16 +15,19 @@ export const PlayerDashboard = () => {
     useEffect(() => console.log(user), [user])
 
     const addLeagueAccount = async () => {
-        const {data} = await leagueApi.getSummonerRank(leagueName)
-        if(data[0].queueType === "RANKED_SOLO_5x5") {
+        const { data } = await leagueApi.getSummonerRank(leagueName)
+        if (data[0].queueType === "RANKED_SOLO_5x5") {
             const obj = {
                 username: leagueName,
-                rank: {tier: data[0].tier, division: data[0].rank, lp: data[0].leaguePoints},
+                rank: { tier: data[0].tier, division: data[0].rank, lp: data[0].leaguePoints },
                 championPlayed: [{ champion: '', wins: 0, losses: 0, games: 0 }]
             }
             userService
                 .addLeagueAccount(user._id, obj)
-                .then(({ data }) => setUser(data))
+                .then(({ data }) => {
+                    setLeagueName('')
+                    setUser(data)
+                })
         } else {
             setErr('Must have ranking in Ranked Solo 5v5')
         }
@@ -40,13 +43,11 @@ export const PlayerDashboard = () => {
         setChampionPlayed({ ...championPlayed, games: championPlayed.wins + championPlayed.losses })
     }, [championPlayed.wins, championPlayed.losses])
 
-    useEffect(() => console.log(championPlayed), [championPlayed])
-
-
     const setTab = ({ target }: any) => setActive(target.id)
 
     const submitChampion = async () => {
-        const { data } = await userService.addChampionPlayed(user._id, championPlayed);
+        const userData = user.leagueUsernames.filter(x => x.username === active)
+        const { data } = await userService.addChampionPlayed(user._id, userData[0]._id, championPlayed);
         setUser(data);
     }
 
@@ -93,22 +94,23 @@ export const PlayerDashboard = () => {
                                     <button className="btn btn-primary form-control" onClick={submitChampion}>Submit Champion</button>
                                 </div>
                             </div>
-                            {account.championPlayed.filter(x => x.games > 0).map(champion =>
-                                <div className="row" key={champion.champion}>
-                                    <div className="col-3">
-                                        <h1>{champion.champion}</h1>
+                            {account.championPlayed.filter(x => x.champion === '')
+                                .map(champion =>
+                                    <div className="row" key={champion.champion}>
+                                        <div className="col-3">
+                                            <h1>{champion.champion}</h1>
+                                        </div>
+                                        <div className="col-3">
+                                            <h1>Wins {champion.wins}</h1>
+                                        </div>
+                                        <div className="col-3">
+                                            <h1>Losses {champion.losses}</h1>
+                                        </div>
+                                        <div className="col-3">
+                                            <h1>Total {champion.games}</h1>
+                                        </div>
                                     </div>
-                                    <div className="col-3">
-                                        <input type="number" value={champion.wins}>Wins {champion.wins}</input>
-                                    </div>
-                                    <div className="col-3">
-                                        <input type="number" value={champion.losses}>Losses {champion.losses}</input>
-                                    </div>
-                                    <div className="col-3">
-                                        <h1>Total {champion.games}</h1>
-                                    </div>
-                                </div>
-                            )}
+                                )}
                         </div>)}
                 </div>
                 {/* Rule booleans */}

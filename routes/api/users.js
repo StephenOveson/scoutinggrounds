@@ -30,4 +30,7 @@ router
   .put(userController.update)
   .delete(userController.remove);
 
+router
+  .route("/champion/:id")
+  .put(userController.updateChampions)
 module.exports = router;
